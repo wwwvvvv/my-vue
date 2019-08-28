@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+<div id="app">
+    <!--{{msg}}-->
+    <!--<span v-once>{{msg}}</span>-->
+    <!--<p>{{msg2.split('').reverse().join('')}}</p>-->
+    <!--<p>{{reverStr}}</p>-->
+    <!--<p>Date now : {{nowTime}}</p>-->
+    <!--<hr>-->
+    <!--<div>-->
+        <!--<span :class="[isRed? 'red' : '', hasErr? 'has-err' : '', className]">firstName: {{firstName}}</span>-->
+        <!--<br>-->
+        <!--<span :style="[{color: hasErr ? 'red' : 'black'},{background: 'yellow'}]" :class="classObj">lastName: {{lastName}}</span>-->
+        <!--<br>-->
+        <!--<span :style="{color: isRed ? 'red' : 'yellow'}" :class="{red: isRed, 'has-err': hasErr}">fullName: {{fullName}}</span>-->
+    <!--</div>-->
+    <!--<ul>-->
+        <!--<li v-for="(val, prop, index) in userInfo">prop: {{ prop }}, val: {{val}}, index: {{index}}</li>-->
+    <!--</ul>-->
+    <!--<hr>-->
+    <!--<ul>-->
+        <!--<li v-for="n in numbers">{{n}}</li>-->
+    <!--</ul>-->
+    <!--<hr>-->
+    <!--<ul>-->
+        <!--<li v-for="n in even(numbers)">{{n}}</li>-->
+    <!--</ul>-->
+    <!--<hr>-->
+    <!--<ul>-->
+        <!--<li v-for="(item, index) of oddNumbers">{{index + 1}}: {{item}}</li>-->
+    <!--</ul>-->
+    <!--<div style="width: 200px;height: 200px;background: red;" @click.exact.ctrl="counter += 1;">-->
+        <!--<button>{{counter}}</button>-->
+    <!--</div>-->
+    <!--<form action="#">-->
+        <!--<fieldset>-->
+            <!--<legend>form 表单</legend>-->
+            <!--&lt;!&ndash;<input type="text" v-model="iptVal1">&ndash;&gt;-->
+            <!--&lt;!&ndash;<textarea name="textarea" id="" cols="30" rows="10" v-model="textareaVal"></textarea>&ndash;&gt;-->
+            <!--&lt;!&ndash;<input v-model="checkVal" value="a" type="checkbox"> a&ndash;&gt;-->
+            <!--&lt;!&ndash;<input v-model="checkVal" value="b" type="checkbox"> b&ndash;&gt;-->
+            <!--&lt;!&ndash;<p>checkbox values: {{checkVal.join(',')}}</p>&ndash;&gt;-->
+            <!--&lt;!&ndash;<label for="radio">&ndash;&gt;-->
+            <!--&lt;!&ndash;<input v-model="genderVal" type="radio" value="boy" id="radio" name="gender"> 男&ndash;&gt;-->
+        <!--&lt;!&ndash;</label>&ndash;&gt;-->
+            <!--&lt;!&ndash;<label for="radio2">&ndash;&gt;-->
+                <!--&lt;!&ndash;<input v-model="genderVal" type="radio" value="girl" id="radio2" name="gender"> 女&ndash;&gt;-->
+            <!--&lt;!&ndash;</label>&ndash;&gt;-->
+            <!--&lt;!&ndash;<label for="radio3">&ndash;&gt;-->
+                <!--&lt;!&ndash;<input v-model="genderVal" type="radio" value="unknow" id="radio3" name="gender"> 未知&ndash;&gt;-->
+            <!--&lt;!&ndash;</label>&ndash;&gt;-->
+            <!--&lt;!&ndash;<p>gender is {{genderVal}}</p>&ndash;&gt;-->
+            <!--&lt;!&ndash;<hr>&ndash;&gt;-->
+            <!--&lt;!&ndash;<select v-model="selVal" name="sel" id="sel">&ndash;&gt;-->
+                <!--&lt;!&ndash;<option disabled value="">请选择</option>&ndash;&gt;-->
+                <!--&lt;!&ndash;<option value="a">A</option>&ndash;&gt;-->
+                <!--&lt;!&ndash;<option value="b">B</option>&ndash;&gt;-->
+                <!--&lt;!&ndash;<option value="c">C</option>&ndash;&gt;-->
+                <!--&lt;!&ndash;<option value="d">D</option>&ndash;&gt;-->
+            <!--&lt;!&ndash;</select>&ndash;&gt;-->
+            <!--&lt;!&ndash;<p>select value is {{selVal}}</p>&ndash;&gt;-->
+            <!--&lt;!&ndash;<hr>&ndash;&gt;-->
+            <!--&lt;!&ndash;<select v-model="mulSelVal" multiple="multiple" style="width: 50px;">&ndash;&gt;-->
+                <!--&lt;!&ndash;<option value="a"> a </option>&ndash;&gt;-->
+                <!--&lt;!&ndash;<option value="b"> b </option>&ndash;&gt;-->
+                <!--&lt;!&ndash;<option value="c"> c </option>&ndash;&gt;-->
+                <!--&lt;!&ndash;<option value="d"> d </option>&ndash;&gt;-->
+                <!--&lt;!&ndash;<option value="e"> e </option>&ndash;&gt;-->
+            <!--&lt;!&ndash;</select>&ndash;&gt;-->
+            <!--&lt;!&ndash;<p>multiple select value is：{{mulSelVal}}</p>&ndash;&gt;-->
+            <!--&lt;!&ndash;<hr>&ndash;&gt;-->
+            <!--&lt;!&ndash;<input type="checkbox" v-model="checkVal2" true-value="yes" false-value="no"> 选择&ndash;&gt;-->
+            <!--&lt;!&ndash;<p>checkbox value is {{checkVal2}}</p>&ndash;&gt;-->
+            <!--&lt;!&ndash;<hr>&ndash;&gt;-->
+            <!--&lt;!&ndash;<input name="gender2" type="radio" v-model="radioVal2" :value="rVal1"> boy&ndash;&gt;-->
+            <!--&lt;!&ndash;<input name="gender2" type="radio" v-model="radioVal2" :value="rVal2"> girl&ndash;&gt;-->
+            <!--&lt;!&ndash;<p>gender2 value is: {{radioVal2}}</p>&ndash;&gt;-->
+            <!--&lt;!&ndash;<hr>&ndash;&gt;-->
+            <!--&lt;!&ndash;<select name="sel2" id="sel2" v-model="sel2Val">&ndash;&gt;-->
+                <!--&lt;!&ndash;<option value="">请选择</option>&ndash;&gt;-->
+                <!--&lt;!&ndash;<option :value="{number: 0}">A</option>&ndash;&gt;-->
+                <!--&lt;!&ndash;<option :value="{number: 1}">B</option>&ndash;&gt;-->
+                <!--&lt;!&ndash;<option :value="{number: 2}">C</option>&ndash;&gt;-->
+            <!--&lt;!&ndash;</select>&ndash;&gt;-->
+            <!--&lt;!&ndash;<p>select2 value is {{sel2Val.number}}</p>&ndash;&gt;-->
+            <!--<input type="number" v-model.number="iptVal1">-->
+            <!--<p>input value is {{iptVal1}}</p>-->
+        <!--</fieldset>-->
+    <!--</form>-->
+    <!--<template id="#c1">-->
+        <!---->
+    <!--</template>-->
+    <!--<h5>component</h5>-->
+    <!--<button-counter></button-counter>-->
+    <!--<button-counter></button-counter>-->
+    <!--<button-counter></button-counter>-->
+    <!--<hr>-->
+    <!--<div class="post-list">-->
+        <!--<blog-post v-for="(item, index) in postList" :title="item.title" :desc="item.desc" v-bind:author-name="item.authorName"></blog-post>-->
+    <!--</div>-->
+    <div class="post-list">
+        <blog-post v-for="post in postList" :font-size="fontSize" :post="post" @enlarge-text="enlargeText"></blog-post>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<!--<script src="javascript/bundle.js">-->
+
+<!--</script>-->
+<script>
+    Vue.component('blog-post', {
+        props: ['fontSize', 'post'],
+        template: `<div><p class="title" :style="{fontSize: fontSize + 'px'}">{{post.title}}</p><p>{{post.desc}}</p><button @click="$emit('enlarge-text',0.1)">enlarge-text</button></div>`
+    });
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            postList: [
+                {title: 'post1', desc: 'post1 desc'},
+                {title: 'post2', desc: 'post2 desc'}
+            ],
+            fontSize: 12
+        },
+        methods: {
+            enlargeText(enlargeAmount) {
+                console.log('a');
+                this.fontSize += enlargeAmount;
+            }
+        }
+    })
+    // Vue.component('button-counter', {
+    //     template: `<button @click="count+=1;">{{count}}</button>`,
+    //     data() {
+    //         return {
+    //             count: 0
+    //         }
+    //     }
+    // });
+    // Vue.component('blog-post', {
+    //     props: ['title','desc','authorName'],
+    //     template: `<div><h3>{{title}}</h3><h5>{{authorName}}</h5><p>{{desc}}</p></div>`
+    // });
+    // var vm = new Vue({
+    //     el: "#app",
+    //     data: {
+    //         postList: [
+    //             {title: 'title1', desc: 'desc1', authorName: 'Tim'},
+    //             {title: 'title2', desc: 'desc2', authorName: 'Cindy'}
+    //         ],
+    //         counter: 0,
+    //         msg: 'hello world!',
+    //         rawHtml: '<h2>hello dandan!!!</h2>',
+    //         msg2: 'hello yindan',
+    //         eventname: 'mousedown',
+    //         firstName: 'Da',
+    //         lastName: 'unnamed',
+    //         fullName: '',
+    //         isRed: false,
+    //         hasErr: true,
+    //         className: 'normal',
+    //         numbers: [1,2,3,4,5,6,7,8,9,0],
+    //         userInfo: {
+    //             nickName: 'yindan',
+    //             gender: 2,
+    //             avatarUrl: 'xxxx'
+    //         },
+    //         iptVal1: 'iptVal1',
+    //         checkVal: [],
+    //         textareaVal: 'textarea val',
+    //         genderVal: 'boy',
+    //         selVal: '',
+    //         mulSelVal: [],
+    //         checkVal2: 'yes',
+    //         rVal1: '男',
+    //         rVal2: '女',
+    //         radioVal2: '男',
+    //         sel2Val: ''
+    //     },
+    //     // components: {
+    //     //     'button-counter': buttonCounter
+    //     // },
+    //     computed: {
+    //         reverStr() {
+    //             return [...this.msg2].reverse().join('');
+    //         },
+    //         nowTime() {
+    //             return Date.now();
+    //         },
+    //         classObj() {
+    //             return {
+    //                 'has-error': this.hasErr,
+    //                 red: this.isRed
+    //             }
+    //         },
+    //         oddNumbers(e) {
+    //             return this.numbers.filter(item => {
+    //                 return item % 2 === 0;
+    //             });
+    //         }
+    //         // fullName: {
+    //         //     set(val) {
+    //         //        let [firstName, lastName] = val.split(' ');
+    //         //        this.firstName = firstName;
+    //         //        this.lastName = lastName;
+    //         //     },
+    //         //     get() {
+    //         //         return this.firstName + ' ' + this.lastName;
+    //         //     }
+    //         // }
+    //     },
+    //     watch: {
+    //         firstName(val) {
+    //             this.fullName = val + ' ' + this.lastName;
+    //         },
+    //         lastName(val) {
+    //             this.fullName = this.firstName + ' ' + val;
+    //         },
+    //     },
+    //     methods: {
+    //         doSomething: function () {
+    //             alert(this.eventname);
+    //
+    //         },
+    //         even(numbers) {
+    //             return numbers.filter(item => {
+    //                 return item % 2 !== 0;
+    //             });
+    //         }
+    //     }
+    // });
+
+    // var counter = (function () {
+    //     let image = 0;
+    //     let msc = 0;
+    //     return {
+    //         set image(val) {
+    //             image = val;
+    //         },
+    //         set msc(val) {
+    //             msc = val;
+    //         },
+    //         get val() {
+    //             return this.image * 0.95 + this.msc * 0.05;
+    //         },
+    //         updateProgress() {
+    //             $('body').text(this.val);
+    //         }
+    //     }
+    // }());
+</script>
+</body>
+</html>
