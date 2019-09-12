@@ -1,0 +1,57 @@
+<%- include header.ejs%>
+<p class="info-item info-name">
+    <label for="name">姓名：</label>
+    <span>32</span>
+</p>
+<p class="info-item info-age">
+    <label for="age">年龄：</label>
+    <span>32</span>
+</p>
+<p class="info-item info-tel">
+    <label for="tel">电话：</label>
+    <span>32</span>
+</p>
+<p class="info-item info-email">
+    <label for="email">邮箱：</label>
+    <span>32</span>
+</p>
+<p class="info-item">
+    <label for="avatar">头像：</label>
+    <img class="avatar" src="" alt="">
+</p>
+<%- include footer.ejs%>
+<script type="text/javascript">
+function getInfo() {
+    var apiUrl = 'http://127.0.0.1:3000/';
+    $.ajax({
+        type: 'get',
+        // 跨域提交cookie，保持session
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true,
+        url: apiUrl + 'info',
+        data: '',
+        contentType: 'application/json; charset=utf-8',
+        success(res) {
+            console.log('res-info --------->', res);
+            let $errorToast = $('.error-toast');
+            if (!res.success) {
+                $errorToast.text(res.err).show();
+                return false;
+            }
+            $errorToast.hide();
+            let resData = res.data;
+            $('.info-name span').text(resData.name);
+            $('.info-age span').text(resData.age);
+            $('.info-tel span').text(resData.tel);
+            $('.info-email span').text(resData.email);
+            $(".avatar").attr('src', resData.avatar);
+        },
+        error(msg) {
+        }
+    });
+}
+
+getInfo();
+</script>
