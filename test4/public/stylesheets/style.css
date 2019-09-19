@@ -1,0 +1,97 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+body{
+  padding-top: 30px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+ul {
+  list-style: none;
+}
+a{
+  text-decoration: none;
+  color: #000;
+}
+.left-slider {
+  position: absolute;
+  width: 100px;
+  left: -100px;
+  text-align: center;
+  top: 45px;
+}
+.left-slider li {
+  padding: 8px 0;
+  font-size: 16px;
+}
+li:hover{
+  background: red;
+}
+li:hover a{
+  color: #fff;
+}
+.page {
+  width: 1158px;
+  max-width: 1158px;
+  height: 100%;
+  margin: 0 auto;
+}
+.content {
+  width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+}
+.page-title {
+  height: 45px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #d9d9d9;
+  box-sizing: border-box;
+}
+.content p {
+  margin-top: 15px;
+}
+.content .info-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.content .info-item label {
+  width: 80px;
+  text-align: right;
+  display: inline-block;
+}
+.content .info-item input {
+  width: 200px;
+  box-sizing: border-box;
+  outline: none;
+  height: 28px;
+}
+.content .info-item span {
+  display: inline-block;
+  width: 100px;
+  text-align: left;
+}
+.content .info-item img {
+  width: 100px;
+  height: 100px;
+  display: inline-block;
+  border-radius: 50%;
+}
+.content input[type=submit], .content input[type=button] {
+  border: 1px solid #d9d9d9;
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background: none;
+  outline: none;
+}
+.error-toast{
+  width: 100%;
+  height: 35px;
+  line-height: 35px;
+  background: rgba(255,0,0,0.8);
+  text-align: center;
+  color: #fff;
+  display: none;
+}

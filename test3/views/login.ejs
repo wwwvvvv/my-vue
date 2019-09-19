@@ -1,0 +1,52 @@
+<%- include header.ejs%>
+<!--<form action="" method="post">-->
+    <p class="info-item">
+        <label for="name">姓名：</label>
+        <input type="text" name="name" id="name">
+    </p>
+    <p class="info-item">
+        <label for="tel">密码：</label>
+        <input type="password" name="password" id="password">
+    </p>
+    <p>
+        <input class="login-btn" type="button" value="登录">
+    </p>
+<!--</form>-->
+<%- include footer.ejs%>
+<script type="text/javascript">
+    var apiUrl = 'http://127.0.0.1:3000/';
+    $(".login-btn").click(function () {
+        let name = $("#name").val();
+        let password = $("#password").val();
+        let data = {
+            name,
+            password
+        }
+        $.ajax({
+            method: 'post',
+            // 跨域提交cookie，保持session
+            xhrFields: {
+                withCredentials: true
+            },
+            crossDomain: true,
+            url: apiUrl + 'login',
+            data: JSON.stringify(data),
+            contentType: 'application/json; charset=utf-8',
+            success(res) {
+                console.log('res', res);
+                if (!res.success) {
+                    $(".error-toast").text(res.err).show();
+                    if (res.err === '您已登录') {
+                        window.location.replace('/personalInfo');
+                    }
+                    return;
+                }
+                $(".error-toast").hide();
+                window.location.replace('/personalInfo');
+            },
+            error(msg) {
+                console.log(msg);
+            }
+        })
+    });
+</script>

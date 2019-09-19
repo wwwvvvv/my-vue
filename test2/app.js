@@ -7,6 +7,9 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var flash = require('connect-flash');
 var settings = require('./settings');
+//全局引入mongoose
+var mongoose = require('./config/mongoose');
+var db = mongoose();
 // var multer = require('multer');
 
 var indexRouter = require('./routes/index');
@@ -29,7 +32,7 @@ app.use(session({
     name: settings.db,
     secret: settings.cookieSecret,
     store: new MongoStore({
-        url: 'mongodb://localhost:27017/mtest'
+        url: 'mongodb://localhost/mtest2'
     }),
     cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 30
