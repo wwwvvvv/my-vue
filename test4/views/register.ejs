@@ -38,21 +38,6 @@
 
 
     $(".register").click(function () {
-        // let name = $("#name").val();
-        // let age = $("#age").val();
-        // let tel = $("#tel").val();
-        // let email = $("#email").val();
-        // let avatar = $("#avatar")[0].files;
-        // let params = {
-        //     name,
-        //     age,
-        //     tel,
-        //     email,
-        //     avatar
-        // };
-        // formdata.append('name',name);
-        // console.log(formdata);
-
         var form = document.forms.namedItem('registerForm');
         var formdata = new FormData(form);
         $.ajax({

@@ -12,8 +12,8 @@ mongoose.Promise = Promise;
 
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
-// db.on('open', function () {
-db.on('connected', function () {
+db.on('open', function () {
+// db.on('connected', function () {
     console.log('connect:', config.mongodb);
 });
 db.once('disconnected', function () {
@@ -27,18 +27,35 @@ class Mongo {
         console.log('dbName:', dbName, 'ready!');
     }
 
-    save(data, cb) {
+    save(data) {
         console.log('data', data);
-        let Model = this.Model;
-        let newEntity = new Model(data);
-        newEntity.save((err, entity, other) => {
-            cb(err, entity);
+        return new Promise((resolve, reject) => {
+            let Model = this.Model;
+            let newEntity = new Model(data);
+            console.log('newEntity', newEntity);
+            newEntity.save((err, entity, other) => {
+                if (err) {
+                    console.log('err', err);
+                    reject(err);
+                    return false;
+                }
+                console.log('entity', entity);
+                resolve(entity);
+            });
         });
     }
 
-    findOne(condition, cb) {
-        let Model = this.Model;
-        Model.findOne(condition,cb);
+    findOne(condition) {
+        return new Promise((resolve, reject) => {
+            let Model = this.Model;
+            Model.findOne(condition,function (err,doc) {
+                if (err) {
+                    reject(err);
+                    return false;
+                }
+                resolve(doc);
+            });
+        })
     }
 }
 

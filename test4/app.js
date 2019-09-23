@@ -32,7 +32,7 @@ app.use(session({
     name: settings.db,
     secret: settings.cookieSecret,
     store: new MongoStore({
-        url: 'mongodb://localhost/mtest2'
+        url: 'mongodb://localhost/mtest4'
     }),
     cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 30

@@ -30,21 +30,14 @@ router.get('/', function(req, res, next) {
   res.redirect('/login');
 });
 
-router.get('/register', loginStatus.checkIsLogout);
-router.get('/register', function (req, res, next) {
+router.get('/register',loginStatus.checkIsLogout, function (req, res, next) {
     res.render('register', {
         title: '注册',
         user: req.session.user
     });
 });
-// router.post('/register', loginStatus.checkIsLogout);
-router.post('/register', upload.single('avatar'), function (req, res, next) {
-    if (req.session.user) {
-        return res.json({
-            success: false,
-            err: '您已登录'
-        });
-    }
+// router.post('/register', );
+router.post('/register', loginStatus.checkIsLogout, upload.single('avatar'), async function (req, res, next) {
     let {
         name,
         age,
@@ -74,39 +67,65 @@ router.post('/register', upload.single('avatar'), function (req, res, next) {
         return res.json({success: false, err: errMsg});
     }
     password = crypto.createHash('md5').update(password).digest('hex');
-    var newUser = new User();
-    newUser.get({name}, function (err, user) {
-        if (err) {
-            return res.json({success: false, err});
-        }
-        if (user) {
-            return res.json({success: false, err: '用户已存在!'});
-        }
-        newUser.save({name, age, tel, email, password, avatar},function (err, user) {
-            if (err) {
-                return res.json({success: false, err});
-            }
-            console.log('user', user);
-            user.avatar = `${settings.baseUrl}uploads/${avatar}`;
-            req.session.user = user;
-            res.json({
-                success: true,
-                data: user,
-                err: ''
-            });
+
+
+    let newUser = new User();
+    let getUser = await newUser.get({name}).catch(err=> {
+        return res.json({
+            success: false,
+            err
         });
-    })
+    });
+    console.log('getUser', getUser);
+    if (getUser) {
+        return res.json({success: false, err: '用户已存在!'});
+    }
+    let user = await newUser.save({name, age, tel, email, password, avatar}).catch(err => {
+        return res.json({
+            success: false,
+            err
+        });
+    });
+    console.log('saveUser', user);
+    user.avatar = `${settings.baseUrl}uploads/${avatar}`;
+    req.session.user = user;
+    res.json({
+        success: true,
+        data: user,
+        err: ''
+    });
+
+    // newUser.get({name}, function (err, user) {
+    //     if (err) {
+    //         return res.json({success: false, err});
+    //     }
+    //     if (user) {
+    //         return res.json({success: false, err: '用户已存在!'});
+    //     }
+    //     newUser.save({name, age, tel, email, password, avatar},function (err, user) {
+    //         if (err) {
+    //             return res.json({success: false, err});
+    //         }
+    //         console.log('user', user);
+    //         user.avatar = `${settings.baseUrl}uploads/${avatar}`;
+    //         req.session.user = user;
+    //         res.json({
+    //             success: true,
+    //             data: user,
+    //             err: ''
+    //         });
+    //     });
+    // })
 });
 
-router.get('/login', loginStatus.checkIsLogout);
-router.get('/login', function (req, res, next) {
+router.get('/login',loginStatus.checkIsLogout, function (req, res, next) {
    res.render('login', {
        title: '登录',
        user: req.session.user
    })
 });
 // router.post('/login', loginStatus.checkIsLogout);
-router.post('/login', function (req, res, next) {
+router.post('/login', async function (req, res, next) {
     if (req.session.user) {
         return res.json({
             success: false,
@@ -129,34 +148,32 @@ router.post('/login', function (req, res, next) {
             err: errMsg
         });
     }
-    new User().get({name}, function (err, user) {
-        if (err) {
-            return res.json({
-                success: false,
-                err
-            });
-        }
-        console.log('user', user);
-        if (!user) {
-            return res.json({
-                success: false,
-                err: '用户不存在!'
-            });
-        }
-        let iptPassword = crypto.createHash('md5').update(password).digest('hex');
-        if (user.password !== iptPassword) {
-            return res.json({
-                success: false,
-                err: '密码错误!'
-            });
-        }
-        user.avatar = `${settings.baseUrl}uploads/${user.avatar}`;
-        req.session.user = user;
-        res.send({
-            success: true,
-            msg: '登录成功!'
+    let user = await new User().get({name}).catch(err => {
+        return res.json({
+            success: false,
+            err
         });
-    })
+    });
+    if (!user) {
+        return res.json({
+            success: false,
+            err: '用户不存在!'
+        });
+    }
+
+    let iptPassword = crypto.createHash('md5').update(password).digest('hex');
+    if (user.password !== iptPassword) {
+        return res.json({
+            success: false,
+            err: '密码错误!'
+        });
+    }
+    user.avatar = `${settings.baseUrl}uploads/${user.avatar}`;
+    req.session.user = user;
+    res.send({
+        success: true,
+        msg: '登录成功!'
+    });
 });
 
 router.get('/personalInfo', loginStatus.checkIsLogin);

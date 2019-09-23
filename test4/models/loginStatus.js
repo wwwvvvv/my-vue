@@ -7,7 +7,10 @@ function checkIsLogin(req, res, next) {
 
 function checkIsLogout(req, res, next) {
     if (req.session.user) {
-        return res.redirect('/');
+        return res.json({
+            success: false,
+            err: '您已登录'
+        })
     }
     next();
 }

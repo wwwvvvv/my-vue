@@ -31,12 +31,13 @@ class UserService extends Mongo{
 }
 
 class User {
-    save(data, cb) {
-        UserService.getInstance().save(data, cb);
+    save(data) {
+        console.log('execute-here')
+        return UserService.getInstance().save(data);
     }
 
-    get(condition, cb) {
-        UserService.getInstance().findOne(condition, cb);
+    get(condition) {
+        return UserService.getInstance().findOne(condition);
     }
 }
 
