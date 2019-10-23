@@ -1,6 +1,6 @@
 const Mongo = require('../config/mongoose');
 let cache = {};
-let dbName = 'dbName';
+let dbName = 'user';
 class UserService extends Mongo{
     constructor (){
         let _schema = {

@@ -7,6 +7,7 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var flash = require('connect-flash');
 var settings = require('./settings');
+var mongoose = require('./config/mongoose');
 //全局引入mongoose
 // var mongoose = require('./config/mongoose');
 // var db = mongoose();
@@ -14,6 +15,7 @@ var settings = require('./settings');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var storyRouter = require('./routes/story');
 
 var app = express();
 
@@ -41,8 +43,22 @@ app.use(session({
 app.use(flash());
 // app.use(multer({dest: '/tmp/'}).array('image'));
 
+//设置允许跨域
+app.all('*', function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "http://192.168.1.104:8887");//项目上线后改成页面的地址
+    // res.header("Access-Control-Allow-Origin", "http://192.168.1.11:8887");//项目上线后改成页面的地址
+
+    res.header("Access-Control-Allow-Headers", "X-Requested-With,Content-Type");
+
+    res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+    res.header("Access-Control-Allow-Credentials", 'true');
+
+    next();
+});
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/story', storyRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

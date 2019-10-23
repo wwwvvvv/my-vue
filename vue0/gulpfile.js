@@ -122,7 +122,8 @@ gulp.task("watch", function () {
     gulp.watch(app + '/src/*.html').on("change",gulp.series('htmlMin'));
     gulp.watch(app + '/src/scss/*.scss').on("change",gulp.series('dealCss'));
     gulp.watch(app + '/src/javascript/*.js').on("change",gulp.series('scripts'));
-    gulp.watch([app + '/src/javascript/**/*.js','!'+app + '/src/javascript/main.js']).on("change",gulp.series('copy-js'));
+    // gulp.watch([app + '/src/javascript/**/*.js','!'+app + '/src/javascript/main.js']).on("change",gulp.series('copy-js'));
+    gulp.watch([app + '/src/javascript/**/*.js']).on("change",gulp.series('copy-js'));
     gulp.watch(app + '/dist/*.html').on("change", browserSync.reload);
     gulp.watch(app + '/dist/javascript/**/*.js').on("change", browserSync.reload);
     gulp.watch(app + '/dist/css/*.css').on("change", browserSync.reload);

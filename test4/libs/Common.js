@@ -1,4 +1,7 @@
 var me = {
+    regex: {
+        mobile: /^1[0-9]{10}$/
+    },
     trim(str) {
         if (!str) {
             return;

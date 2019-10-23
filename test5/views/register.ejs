@@ -53,7 +53,7 @@
             success: function (res) {
                console.log('res', res);
                if (!res.success) {
-                  $(".error-toast").text(res.err).show();
+                  $(".error-toast").text(res.msg).show();
                    if (res.err === '您已登录') {
                        window.location.replace('/personalInfo');
                    }

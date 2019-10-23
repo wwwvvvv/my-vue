@@ -2,10 +2,18 @@ var express = require('express');
 var multer = require('multer');
 var router = express.Router();
 var path = require('path');
-var User = require('../service/user');
+// var User = require('../service/user');
+var newUser = require('../service/user2');
 var crypto = require('crypto');
 var settings = require('../settings');
 var loginStatus = require('../models/loginStatus');
+const Common = require('../libs/Common');
+const VD = require('../libs/VD');
+var newPerson = require('../service/person');
+var newStory = require('../service/story');
+var mongoose = require('mongoose');
+var utf8 = require('utf8');
+var request = require('request');
 
 
 
@@ -38,85 +46,115 @@ router.get('/register',loginStatus.checkIsLogout, function (req, res, next) {
 });
 // router.post('/register', );
 router.post('/register', loginStatus.checkIsLogout, upload.single('avatar'), async function (req, res, next) {
+    let avatar = req.file ? req.file.filename : '';
+    req.body.avatar = avatar;
+    let err = VD.validateParams(req.body,{
+        name: '',
+        age: '',
+        tel: '',
+        email: '',
+        password: ['required', 'checkPassword'],
+        rePassword: '',
+        avatar:''
+    });
+    if (err) {
+        return Common.resJson(res, err);
+    }
     let {
         name,
         age,
         tel,
         email,
-        password,
-        rePassword
+        password
     } = req.body;
-    let avatar = req.file ? req.file.filename : '';
-    let errMsg = '';
-    if (name === '') {
-        errMsg = '名字不能为空'
-    } else if (age === '') {
-        errMsg = '年龄不能为空'
-    } else if (tel === '') {
-        errMsg = '电话号码不能为空'
-    } else if (email === '') {
-        errMsg = '邮箱不能为空'
-    } else if (password === '') {
-        errMsg = '密码不能为空'
-    } else if (password !== rePassword) {
-        errMsg = '两次输入的密码不一致'
-    }else if (avatar === '') {
-        errMsg = '头像不能为空'
-    }
-    if (errMsg) {
-        return res.json({success: false, err: errMsg});
-    }
-    password = crypto.createHash('md5').update(password).digest('hex');
-
-
-    let newUser = new User();
     let getUser = await newUser.get({name}).catch(err=> {
-        return res.json({
-            success: false,
-            err
-        });
+        return Common.resJson(res, err);
     });
-    console.log('getUser', getUser);
+    // console.log('getUser', getUser);
     if (getUser) {
-        return res.json({success: false, err: '用户已存在!'});
+        return Common.resJson(res, '用户已存在!');
     }
-    let user = await newUser.save({name, age, tel, email, password, avatar}).catch(err => {
-        return res.json({
-            success: false,
-            err
-        });
+    password = Common.cryptoPassword(password);
+    let user = await newUser.insert({name, age, tel, email, password, avatar}).catch(err => {
+        return Common.resJson(res, err);
     });
-    console.log('saveUser', user);
+    // console.log('saveUser', user);
     user.avatar = `${settings.baseUrl}uploads/${avatar}`;
     req.session.user = user;
-    res.json({
-        success: true,
-        data: user,
-        err: ''
-    });
-
-    // newUser.get({name}, function (err, user) {
-    //     if (err) {
-    //         return res.json({success: false, err});
-    //     }
-    //     if (user) {
-    //         return res.json({success: false, err: '用户已存在!'});
-    //     }
-    //     newUser.save({name, age, tel, email, password, avatar},function (err, user) {
-    //         if (err) {
-    //             return res.json({success: false, err});
-    //         }
-    //         console.log('user', user);
-    //         user.avatar = `${settings.baseUrl}uploads/${avatar}`;
-    //         req.session.user = user;
-    //         res.json({
-    //             success: true,
-    //             data: user,
-    //             err: ''
-    //         });
-    //     });
-    // })
+    Common.resJson(res, null, user);
 });
+
+router.post('/notify', function (req, res, next) {
+    console.log('notify--body', req.body);
+    Common.resJson(res, null,'','');
+});
+
+router.post('/getBizToken', function (req, res, next) {
+    //
+    // console.log(req.method);
+    let url = 'https://openapi.faceid.com/lite/v1/get_biz_token';
+    let method = req.method.toUpperCase();
+    let options = {
+        headers: {"Connection": "close"},
+        url,
+        method,
+        json: true,
+        body: req.body
+    };
+
+    function callback(error, response, data) {
+        // console.log('response', response);
+        // console.log('data', data);
+        if (!error && response.statusCode === 200 && !data.error) {
+            console.log('---接口数据---', data);
+            return Common.resJson(res, null, data, 'success');
+        }
+        Common.resJson(res, error || data.error, data , 'fail');
+    }
+
+    request(options, callback);
+});
+
+router.post('/getResult', function (req, res, next) {
+    let options = {
+        method: 'get',
+        url: 'https://openapi.faceid.com/lite/v1/get_result',
+        qs: {
+            sign: req.body.sign,
+            'sign_version': req.body['sign_version'],
+            'biz_token': req.body['biz_token']
+        }
+    };
+    request(options, function (error, response, data) {
+        if (!error && response.statusCode === 200 && !data.error) {
+            data = JSON.parse(data);
+            return Common.resJson(res, null, data, 'success');
+        }
+        Common.resJson(res, error || data.error, data , 'fail');
+    });
+});
+
+router.post('/getBizSign', function (req, res, next) {
+    let apiKey = 'gShVjsoQ0d6BSdSyK7o6PClS_9rIT5EQ';
+    let apiSecret = 'vJSnk6Gnlqh9rIb6UVptiSNrvlvkr5kK';
+
+    let validDuration = 100;
+    let currentTime = Date.now();
+    let expireTime = validDuration + currentTime;
+    let random = get10RandomNums();
+    function get10RandomNums() {
+        let randomNums = [];
+        for(let i = 0; i < 10; i++) {
+            randomNums.push(parseInt(Math.random() * 10));
+        }
+        return randomNums.join('');
+    }
+    let raw = `a=${apiKey}&b=${expireTime}&c=${currentTime}&d=${random}`;
+    let signTmp = crypto.createHmac('sha1', apiSecret).update(raw).digest();
+    let sign = Buffer.concat([signTmp, new Buffer(raw)]).toString('base64');
+    Common.resJson(res, null, sign, 'success');
+});
+
 
 router.get('/login',loginStatus.checkIsLogout, function (req, res, next) {
    res.render('login', {
@@ -127,53 +165,33 @@ router.get('/login',loginStatus.checkIsLogout, function (req, res, next) {
 // router.post('/login', loginStatus.checkIsLogout);
 router.post('/login', async function (req, res, next) {
     if (req.session.user) {
-        return res.json({
-            success: false,
-            err: '您已登录'
-        });
+        return Common.resJson(res, '您已登录');
     }
     let {
         name,
         password
     } = req.body;
-    let errMsg = '';
-    if (name === '') {
-        errMsg = '请输入姓名'
-    } else if (password === '') {
-        errMsg = '请输入密码'
+    let err = VD.validateParams(req.body, {
+        name: '',
+        password: ''
+    });
+    if (err) {
+        return Common.resJson(res, err);
     }
-    if (errMsg) {
-        return res.json({
-            success: false,
-            err: errMsg
-        });
-    }
-    let user = await new User().get({name}).catch(err => {
-        return res.json({
-            success: false,
-            err
-        });
+    let user = await newUser.get({name}).catch(err => {
+        return Common.resJson(res, err);
     });
     if (!user) {
-        return res.json({
-            success: false,
-            err: '用户不存在!'
-        });
+        return Common.resJson(res, '用户不存在!');
     }
 
-    let iptPassword = crypto.createHash('md5').update(password).digest('hex');
+    let iptPassword = Common.cryptoPassword(password);
     if (user.password !== iptPassword) {
-        return res.json({
-            success: false,
-            err: '密码错误!'
-        });
+        return Common.resJson(res, '密码错误!');
     }
     user.avatar = `${settings.baseUrl}uploads/${user.avatar}`;
     req.session.user = user;
-    res.send({
-        success: true,
-        msg: '登录成功!'
-    });
+    Common.resJson(res, null, user, '登录成功!');
 });
 
 router.get('/personalInfo', loginStatus.checkIsLogin);
@@ -197,6 +215,32 @@ router.get('/logout', loginStatus.checkIsLogin);
 router.get('/logout', function (req, res, next) {
    req.session.user = null;
    res.redirect('/');
+});
+
+router.get('/test', async function (req, res, next) {
+   // let ret =  await newUser.find({});
+   // console.log('ret', ret);
+    let author = {
+        _id: new mongoose.Types.ObjectId(),
+        name: 'test',
+        age: 20
+    };
+
+    let story = {
+        title: 'Casino Royale',
+        author: author._id
+    };
+
+    let ret = await newPerson.insertOne(author).catch(err => {
+        console.log('person insert err', err);
+    });
+
+    let ret2 = await newStory.insertOne(story).catch(err => {
+        console.log('story insert err', err);
+    });
+
+    console.log('ret', ret);
+    console.log('ret2', ret2);
 });
 
 module.exports = router;

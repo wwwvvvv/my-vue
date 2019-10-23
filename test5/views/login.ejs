@@ -11,6 +11,10 @@
     <p>
         <input class="login-btn" type="button" value="登录">
     </p>
+    <!--<div class="box">-->
+        <!--<div class="box1"></div>-->
+        <!--<div class="box2">hh</div>-->
+    <!--</div>-->
 <!--</form>-->
 <%- include footer.ejs%>
 <script type="text/javascript">
@@ -49,4 +53,22 @@
             }
         })
     });
+
+    $.ajax({
+        method: 'post',
+        // 跨域提交cookie，保持session
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true,
+        url: apiUrl + 'getBizSign',
+        data: {},
+        contentType: 'application/json; charset=utf-8',
+        success(res) {
+            console.log(res);
+        },
+        error(msg) {
+            console.log(msg);
+        }
+    })
 </script>

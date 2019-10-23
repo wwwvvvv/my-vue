@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .red{
+            background: red;
+        }
+        .green{
+            background: green;
+        }
+        .pink{
+            background: pink;
+        }
+        .bor-yellow{
+            padding:5px;
+            border: 3px solid yellow;
+            outline: none;
+        }
+        .tab-button{
+            background: #fff;
+        }
+        .tab-button.active{
+            background: red;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <!--{{countMsg}}-->
+    <!--<button :style="{backgroundColor: color}" @click="addCount('test',$event)">增加</button>-->
+    <!--<div v-for="(item, index) in list">-->
+        <!--<p>姓名：{{item.name}} 年龄：{{item.age}} 性别：{{item.gender}} <span v-if="item.other">other-info: {{item.other.info}} other-grade: {{item.other.grade}} </span></p>-->
+    <!--</div>-->
+    <!--<input type="text" v-model.lazy.trim="val2">-->
+    <!--<input type="number" v-model.number="val2">-->
+    <!--&lt;!&ndash;<input v-model="gender" type="checkbox" value="boy"> 男&ndash;&gt;-->
+    <!--&lt;!&ndash;<input v-model="gender" type="checkbox" value="girl"> 女&ndash;&gt;-->
+    <!--<input v-model="agreeInfo" type="checkbox" true-value="yes" false-value="no">是否同意-->
+    <!--<input type="radio" name="gender" v-model="gender" value="boy"> 男-->
+    <!--<input type="radio" name="gender" v-model="gender" value="girl"> 女-->
+    <!--<select name="select" v-model="sel">-->
+        <!--<option>默认</option>-->
+        <!--<option value="hhh1">h1</option>-->
+        <!--<option>h2</option>-->
+        <!--<option>h3</option>-->
+    <!--</select>-->
+    <!--{{info.content}}-->
+    <!--{{info.test}}-->
+    <!--<btn-counter @add-count="addCount" v-bind="obj"></btn-counter>-->
+    <!--<btn-counter @add-count="addCount"></btn-counter>-->
+    <!--<ul>-->
+        <!--<li is="ul-li"></li>-->
+    <!--</ul>-->
+    <!--<base-checkbox v-model="lovingVue"></base-checkbox>-->
+    <!--<blog-post>-->
+        <!--<template>My favorate books.</template>-->
+    <!--</blog-post>-->
+    <!--<blog-post>-->
+        <!--<p>哈哈哈哈</p>-->
+    <!--</blog-post>-->
+
+    <!--<my-article url="/article">-->
+        <!--<p slot="header">-->
+            <!--name : 1111 age: 18-->
+            <!--count : {{count}}-->
+        <!--</p>-->
+        <!--<p slot="footer">-->
+            <!--2019/10/10 星期四-->
+        <!--</p>-->
+        <!--<template>That's all. Thanks for your view.</template>-->
+    <!--</my-article>-->
+    <!--<cus-btn></cus-btn>-->
+    <!--<cus-btn>Save</cus-btn>-->
+    <!--<br><br><br><br><br>-->
+    <!--<current-user>-->
+        <!--<template v-slot:default="defaultSlot">{{defaultSlot.user.firstName}}</template>-->
+    <!--</current-user>-->
+    <!--<br><br><br><br><br>-->
+    <!--<base-layout>-->
+        <!--<template #header="headerInfo">-->
+            <!--<p>{{headerInfo.title}}</p>-->
+            <!--This is slot content.-->
+        <!--</template>-->
+    <!--</base-layout>-->
+    <div id="dynamic-component-demo" class="demo">
+        <button v-for="tab in tabs" :key="tab" :class="['tab-button', {active: currentTab === tab}]" @click="currentTab = tab">
+            {{tab}}
+        </button>
+        <component :is="currentComponent"></component>
+    </div>
+
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="javascript/bundle.js"></script>
+</body>
+<script>
+    Vue.component('base-checkbox', {
+        model: {
+            prop: 'checked',
+            event: 'change'
+        },
+        props: {
+            checked: Boolean
+        },
+        template: `<input type="checkbox" :checked="checked" @change="$emit('change', $event.target.checked)">`
+    })
+    Vue.component('ul-li', {
+        template: `<div><li v-for="friut in friuts">{{friut}}</li></div>`,
+        data() {
+            return{
+                friuts: ['orange', 'apple', 'banana', 'peach']
+            }
+        }
+    });
+    Vue.component('btn-counter', {
+        template: `<button @click="addCount2">{{count}}</button>`,
+        data() {
+            return {
+                count: 1
+            }
+        },
+        props: ['a','b'],
+        mounted() {
+            console.log(this.$root);
+        },
+        // props: {
+        //     cntCount: {
+        //         type: Number,
+        //         default: 0,
+        //         validator(value) {
+        //             console.log('value', value);
+        //             return value <= 3;
+        //         }
+        //     }
+        // },
+        methods: {
+            addCount2() {
+                this.count++;
+                this.$parent.count++
+                console.log(this.a+this.b);
+                this.$emit('add-count');
+            }
+        }
+    });
+    Vue.component('blogPost', {
+        template: `<div class="blog-post">
+    <dl>
+    <dt>
+    <slot></slot>
+</dt>
+    <dd v-for="(item, index) in blogList" :key="index">{{item}}</dd>
+</dl>
+</div>`,
+        data() {
+            return {
+                blogList: [
+                    'xiaowangzi',
+                    'hongloumeng',
+                    'sanguoyanyi',
+                    'xiyouji'
+                ]
+            }
+        }
+    });
+    Vue.component('myArticle', {
+        template: `<article class="article-ctn">
+    <header>
+    <slot name="header"></slot>
+</header>
+    <div class="content">
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eius nam porro veritatis. Cumque deserunt doloremque id labore nihil reprehenderit soluta! Consequatur ea eligendi eveniet fugiat nulla numquam ratione saepe sequi?</p>
+    <slot></slot>
+</div>
+<footer>
+    url：{{url}}
+    <slot name="footer"></slot>
+</footer>
+</article>`,
+        props: ['url']
+    });
+    Vue.component('cusBtn', {
+        template: '<button><slot>Submit</slot></button>'
+    });
+    Vue.component('currentUser', {
+        template: `<span><slot :user="user">{{user.lastName}}</slot></span>`,
+        data() {
+            return {
+                user: {
+                    lastName: 'Wang.',
+                    firstName: 'AS.'
+                }
+            }
+        }
+    });
+    Vue.component('base-layout', {
+        template: `<article>
+<header>
+    <slot :title="titleInfo" name="header"></slot>
+</header>
+    <p>content.</p>
+<footer>
+    <slot name="footer"></slot>
+</footer>
+</article>`,
+        data() {
+            return {
+                titleInfo: 'This is title'
+            }
+        }
+    });
+    Vue.component('tab-home', {
+        template: `<div>Home component.</div>`
+    });
+    Vue.component('tab-posts', {
+        template: `<div>Posts component.</div>`
+    });
+    Vue.component('tab-archive', {
+        template: `<div>Archive component.</div>`
+    });
+    var vm = new Vue({
+        el: '#app',
+        // components: {
+        //
+        // },
+        data() {
+            return {
+                tabs: [
+                    'Home',
+                    'Posts',
+                    'Archive'
+                ],
+                currentTab: 'Home',
+                dynamicslotname: 'footer',
+                obj: {a: 1, b: 2, c: 3},
+                lovingVue: false,
+                msg: '你好, 当前的数字是',
+                count: 0,
+                color: 'grey',
+                val2: 0,
+                agreeInfo: '',
+                gender: '',
+                sel: '',
+                info: {
+                    content: 'my name is test'
+                },
+                // list: {
+                //     t1: 'question1',
+                //     t2: 'question2',
+                //     t3: 'question3'
+                // }
+                list: [
+                    {
+                        name: '张三',
+                        age: 16,
+                        gender: 'girl',
+                        other: {
+                            info: 'There are some infos.'
+                        }
+                    },{
+                        name: '张三',
+                        age: 16,
+                        gender: 'girl'
+                    },{
+                        name: '张三',
+                        age: 16,
+                        gender: 'girl'
+                    }
+                ]
+            }
+        },
+        computed: {
+            currentComponent() {
+                return 'tab-' + this.currentTab.toLowerCase();
+            },
+            countMsg: {
+                get() {
+                    return this.msg + this.count + '!'
+                },
+                set(val) {
+                    this.msg = val;
+                }
+            }
+        },
+        methods: {
+            addCount(event) {
+                console.log('event', event);
+                this.count++;
+                this.dynamicslotname = 'header';
+                // this.list[1] = 'hello~~~'
+                // this.list[0].other.info='ok'
+                // this.list[0].other.grade='ok'
+                setTimeout(() => {
+                    // this.list[0].other.info='ok'
+                    // this.list[0].other.grade='ok'
+                    // this.info.test = 'hahaha'
+                    this.$set(this.info,'test' ,'hahahhahaha')
+                },1500)
+                // this.$set(this.list[0].other, 'grade' , '高三')
+            }
+        },
+        watch: {
+            count(newVal, oldVal){
+                console.log(this.$children[0].count)
+                console.log('newVal is %s, oldVal is %s', newVal, oldVal);
+                if (this.count < 2) {
+                    this.color = 'pink';
+                } else if(this.count < 4) {
+                    this.color = 'blue'
+                } else {
+                    this.color = 'yellow'
+                }
+            }
+        },
+        mounted() {
+            // console.log(this.$root);
+        }
+        // data() {
+        //     return {
+        //         msg: 'hello world！'
+        //     }
+        // }
+    });
+</script>
+</html>

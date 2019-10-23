@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app">
+    <button @click="changePos">change pos</button>
+    <div v-pos:[pos]="200" style="background: red; width: 200px;height:200px;"></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="javascript/bundle.js"></script>
+<script>
+    function renderM(createElement) {
+        return createElement('div', [
+            createElement('h1', 'this is a h tag.'),
+            createElement('a', {
+                attrs: {
+                    href: 'http://www.baidu.com',
+                    target: '_blank'
+                }
+            }, ['search', createElement('span', ' what?')])
+        ]);
+    }
+
+    Vue.directive('pos', {
+        bind(el, binding, vnode) {
+            console.log(binding.arg);
+            el.style.position = 'fixed';
+            el.style[binding.arg] = binding.value + 'px';
+        },
+        update(el, binding, vnode) {
+            el.style[binding.arg] = binding.value + 'px';
+        }
+    });
+
+    Vue.mixin({
+        data() {
+            return {
+                test: 'ddddd'
+            }
+        }
+    });
+
+    var extendOpts = {
+        created() {
+            console.log('test --- created')
+        },
+        data() {
+            return {
+                test: 'hhhhh'
+            }
+        }
+    };
+
+    var app = new Vue({
+        data: {
+            pos: 'left'
+        },
+        methods: {
+            changePos() {
+                this.pos = 'top'
+            }
+        },
+        // delimiters: ['${','}']
+    }).$mount('#app');
+</script>
+</body>
+</html>
