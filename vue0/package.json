@@ -31,5 +31,11 @@
     "gulp-zip": "^4.0.0",
     "imagemin-pngquant": "^7.0.0",
     "yargs": "^13.1.0"
+  },
+  "dependencies": {
+    "http": "^0.0.0",
+    "https": "^1.0.0",
+    "mongodb": "^3.3.3",
+    "querystring": "^0.2.0"
   }
 }
