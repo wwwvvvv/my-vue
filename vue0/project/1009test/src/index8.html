@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        .box{
+            position: fixed;
+            left: 20px;
+            top: 20px;
+            background: pink;
+            width: 100px;
+            height: 100px;
+        }
+        .hide-active-enter,.hide-active-leave{
+            transition: opacity 3s linear;
+            /*opacity: 0;*/
+            /*opacity: 1;*/
+        }
+        /*.hide-enter{*/
+            /*opacity: 0;*/
+        /*}*/
+        .hide-enter-to, .hide-leave{
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+<div id="app" v-cloak>
+    <p>count2: {{count2}}</p>
+    <test v-model="count2"></test>
+    <p>count3:{{count3}}</p>
+    <test2 :value.sync="count3"></test2>
+    <div id="test"></div>
+    <div id="test2"></div>
+    <button @click="changeColor">changeColor</button>
+    <p v-test="'red'" v-test2="fontColor">hello world</p>
+    <div class="box" v-test3="topVal"></div>
+    #{count3}
+    <transition name="hide">
+        <div v-show="showBox" style="width: 200px; height: 200px; background-color: yellow;"></div>
+    </transition>
+    <button class="change-ani" @click="showBox = !showBox">change!</button>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+<script src="javascript/bundle.js"></script>
+<script>
+    // Vue.prototype.$eventHub = Vue.prototype.$eventHub || new Vue()
+    Vue.component('test', {
+        template: `<div>
+<p>count:{{count}}</p>
+<button @click="changeValue">changeValue</button>
+</div>`,
+        model: {
+            prop: 'count',
+            event: 'addCount'
+        },
+        props: ['count'],
+        data() {
+            return {
+                showBox: false
+            }
+        },
+        methods: {
+            changeValue() {
+                // this.count++;
+                this.$emit('addCount',this.count+1);
+            }
+        }
+    });
+    Vue.component('test2', {
+        template: `<div>
+value:{{value}}
+<button @click="test">test btn</button>
+</div>`,
+        data() {
+            return {
+
+            }
+        },
+        props: ['value'],
+        methods: {
+            test() {
+                this.$emit('update:value', this.value+1)
+            }
+        }
+    });
+    var testExtend = Vue.extend({
+        template: `<div>testCoin: {{coin}}</div>`,
+        data() {
+            return {
+                coin: 'usdt'
+            }
+        }
+    });
+    var test2Extend = Vue.extend({
+        template: `<p>who I'm I?</p>`
+    });
+
+    Vue.directive('test',function (el, binding, value) {
+        console.log(el);
+        console.log(binding);
+        el.style.backgroundColor = binding.value;
+    });
+    Vue.directive('test2', {
+        inserted(el, binding, value) {
+            el.style.color = binding.value;
+        },
+        update(el, binding, value) {
+            el.style.color = binding.value;
+        }
+    });
+    Vue.directive('pos', {
+        inserted(el, binding, vnode) {
+            let posName = binding.arg;
+        }
+    });
+
+    Vue.mixin({
+        created() {
+            console.log("aaaa--bbb")
+        }
+    });
+
+    var vm = new Vue({
+        data() {
+            return {
+                eventHub: new Vue(),
+                count2: 12,
+                count3: 10,
+                fontColor: '#fff',
+                topVal: 50,
+                showBox: true
+            }
+        },
+        mounted() {
+            this.$nextTick(()=> {
+                new testExtend().$mount("#test");
+                new test2Extend().$mount("#test2");
+            });
+        },
+        directives: {
+            test3: {
+                inserted(el, binding, vnode) {
+                    el.style.top = binding.value + 'px';
+                    console.log('aa')
+                },
+                update(el, binding, vnode) {
+                    console.log('bb')
+                    el.style.top = binding.value + 'px';
+                }
+            }
+        },
+        methods: {
+            changeColor() {
+                let r = Math.random() * 255;
+                let g = Math.random() * 255;
+                let b = Math.random() * 255;
+                this.fontColor = `rgb(${r},${g},${b})`;
+                this.topVal = Math.random() * 800;
+            }
+        },
+        mixins: [{
+            created() {
+                console.log("parical test mixins...")
+            }
+        }],
+        extends: {
+            created() {
+                console.log('extends')
+            }
+        },
+        // delimiters: ['#{','}']
+    }).$mount("#app");
+</script>
+</body>
+</html>

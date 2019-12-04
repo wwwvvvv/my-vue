@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .fade-leave-active, .fade-enter-active{
+            transition: opacity 1s;
+        }
+        .fade-leave-to, .fade-enter{
+            opacity: 0;
+        }
+        #demo, #demo2{
+            width: 300px;
+            height: 200px;
+            background: red;
+        }
+        #demo2{
+            background: blue;
+        }
+        .test{
+            width: 50px;
+            height: 50px;
+            background: pink;
+        }
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <!--<div id="demo">-->
+        <!--<button @click="show = !show"> Toggle </button>-->
+        <!--<transition name="fade">-->
+            <!--<p v-if="show">hello</p>-->
+        <!--</transition>-->
+        <!--<div class="test"></div>-->
+    <!--</div>-->
+    <!--<div id="demo2"></div>-->
+    <!--&lt;!&ndash;<router-link to="/user/test">link - test</router-link>&ndash;&gt;-->
+    <!--&lt;!&ndash;<router-link to="/user/test2">test222</router-link>&ndash;&gt;-->
+    <!--<router-link to="/home/test1">test1-btn</router-link>-->
+    <!--<router-link to="/home/test3">test3-btn</router-link>-->
+    <!--<router-link to="/user-testn">test-test</router-link>-->
+    <!--<router-view></router-view>-->
+    <!--<test3 v-bind:post-title="'o^v^o'" @click2="click2">-->
+        <!--<p>{{$root.coins}}</p>-->
+    <!--</test3>-->
+    <!--<input v-model="coins" type="checkbox" value="BTC">BTC-->
+    <!--<input v-model="coins" type="checkbox" value="USDT">USDT-->
+    <!--<input v-model="coins" type="checkbox" value="ETH">ETH-->
+    <!--<input v-model="coins" type="checkbox" value="CNHT">CNHT-->
+    <!--<p>coins: {{coins}}</p>-->
+    <!--component v-model test-->
+    <!--<model-test v-model="val"></model-test>-->
+    <!--<test4 ref="test4" @click.native="click3"></test4>-->
+    <!--<canvas ref="canvas"></canvas>-->
+    <!--<test2 v-bind="post" :author="author">-->
+        <!--<template v-slot:footer="author"><p>Article author is: {{author.info.name}}, gender is {{author.info.gender}}</p></template>-->
+    <!--</test2>-->
+    <!--<slot-test @click.native="dynamicslotname = 'header'">-->
+        <!--<template v-slot:[dynamicslotname]="msg">-->
+            <!--<p>{{msg.title}}</p>-->
+        <!--</template>-->
+    <!--</slot-test>-->
+    <slot-test2 @click.native="slotname='footer'">
+        <template v-slot:[slotname]="content"><p>{{content.info}}</p></template>
+    </slot-test2>
+
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+<script src="javascript/bundle.js"></script>
+<script>
+    var Test = {
+        template: '<div class="demo">This is test.</div>'
+    };
+    var User = {
+        template: `<h4>{{$route.params.name}}</h4>`
+    };
+    var Index = {
+        template: `<h1>This is {{$route.params.page}}</h1>`,
+        created() {
+            console.log('render component.')
+        },
+        beforeRouteUpdate(to, from, next) {
+            console.log('to-where', to);
+            console.log('from-where', from);
+            next();
+        }
+        // watch: {
+        //     '$route': function (to, from) {
+        //         console.log('newRoute', to);
+        //         console.log('oldRoute', from);
+        //     }
+        // }
+    };
+    var User2 = {
+        template: `<div><h2>{{$route.params.pathMatch}}</h2><h3>{{$route.params.name}}</h3></div>`
+    };
+    var NotFound = {
+        template: `<div>NOT FOUND.</div>`
+    };
+    var Test3 = {
+        template: '<div class="ctn" @click="click"><p>{{postTitle}}</p><slot></slot></div>',
+        props: {
+            postTitle: {
+                type: String,
+                default: 'A post title'
+            }
+        },
+        methods: {
+            click() {
+                this.$emit('click2', 'test');
+            }
+        }
+    };
+    var ModelTest = {
+        template: `
+            <div class="ctn" @click="$emit('changeValue', 'newValue')">
+            {{modelValue}}
+</div> `,
+        model: {
+            prop: 'modelValue',
+            event: 'changeValue'
+        },
+        props: {
+            modelValue: {
+                type: String,
+                default: ''
+            }
+        }
+    };
+    var Test4 = {
+        template: `<p>{{msg}}</p>`,
+        data() {
+            return {
+                msg: 'component named test4.'
+            }
+        }
+    };
+    var Test2 = {
+        template: `<div>
+    <h1>{{title}}</h1>
+    <p>{{article}}</p>
+    <slot :info="author" name="footer"></slot>
+</div>`,
+        props: ['title', 'article', 'author']
+    };
+    var SlotTest = {
+//         template: `<div class="ctn">
+//     <slot name="title" :title="article.title">Default Title</slot>
+// </div>`,
+        template: `<div class="ctn">
+    <slot :title="article.title" name="header">header</slot>
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi architecto, consequuntur cupiditate debitis dolore eius, eos facere hic laboriosam perspiciatis quia quibusdam repudiandae saepe totam, voluptas? Amet facere necessitatibus voluptas.
+    <slot :title="article.title" name="footer"></slot>
+</div>`,
+        data() {
+            return {
+                article: {
+                    title: 'HELLO WORLD'
+                }
+            }
+        }
+    };
+    var SlotTest2 = {
+        template: `<div>
+    <slot :info="info" name="header"><p>header</p></slot>
+    <p class="article">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur autem consectetur, ea id iste itaque nam non nulla, officia qui rem, ut vel voluptas! Dolorem eum nulla perspiciatis unde voluptas.</p>
+    <slot :info="info" name="footer"><p>footer</p></slot>
+</div>`,
+        data() {
+            return {
+                info: 'slot content......'
+            }
+        }
+    };
+
+    var routes = [
+        {
+            path: '/test',
+            component: Test
+        },
+        {
+            path: '/user/:name',
+            component: User
+        },
+        {
+            name: 'homeRoute',
+            path: '/home/:page',
+            component: Index,
+            meta: {
+                showTab: false
+            }
+        },
+        {
+            path: '/user-*',
+            component: User2
+        },
+        {
+            path: '*',
+            component: NotFound
+        }
+    ];
+
+    var router = new VueRouter({
+        routes
+    });
+    Vue.prototype.$eventHub = Vue.prototype.$eventHub || new Vue();
+    var app = new Vue({
+        router,
+        components: {
+            Test2,
+            Test3,
+            Test4,
+            ModelTest,
+            SlotTest,
+            SlotTest2
+        },
+        data() {
+            return {
+                dynamicslotname: 'footer',
+                author: {
+                    name: 'Yeeee',
+                    gender: 'girl'
+                },
+                show: false,
+                coins: [],
+                val: 'value',
+                slotname: 'header',
+                eventHub: new Vue(),
+                post: {
+                    title: 'POST TITLE',
+                    article: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores at atque beatae cumque dolore exercitationem, laborum necessitatibus quae quidem, sapiente vel, voluptas voluptatum? Ad aut est nihil non quam quis.'
+                }
+            }
+        },
+        methods: {
+            click2() {
+                alert('clicking.')
+            },
+            click3() {
+                console.log(this.$refs.test4.$data.msg)
+                this.$refs.test4.$data.msg = 'i can change value'
+            }
+        },
+        mounted() {
+            // this.$nextTick(() => {
+            //     console.log(this.$refs.canvas)
+            //     let canvas = this.$refs.canvas;
+            //     canvas.width = 320;
+            //     canvas.height = 320;
+            //     let ctx = canvas.getContext('2d');
+            // })
+        }
+    }).$mount("#app");
+</script>
+</body>
+</html>

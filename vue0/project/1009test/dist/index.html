@@ -4,114 +4,90 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <style>
-        .fade-leave-active, .fade-enter-active{
-            transition: opacity 1s;
+        [v-cloak]{
+            display: none;
         }
-        .fade-leave-to, .fade-enter{
-            opacity: 0;
-        }
-        #demo, #demo2{
-            width: 300px;
-            height: 200px;
-            background: red;
-        }
-        #demo2{
-            background: blue;
-        }
-        .test{
-            width: 50px;
-            height: 50px;
-            background: pink;
-        }
-
     </style>
 </head>
 <body>
-<div id="app">
-    <div id="demo">
-        <button @click="show = !show"> Toggle </button>
-        <transition name="fade">
-            <p v-if="show">hello</p>
-        </transition>
-        <div class="test"></div>
-    </div>
-    <div id="demo2"></div>
-    <!--<router-link to="/user/test">link - test</router-link>-->
-    <!--<router-link to="/user/test2">test222</router-link>-->
-    <router-link to="/home/test1">test1-btn</router-link>
-    <router-link to="/home/test3">test3-btn</router-link>
-    <router-link to="/user-testn">test-test</router-link>
+
+<div id="app" v-cloak>
+    {{msg}}
+    <router-link tag="a" to="/index">link to where?</router-link>
     <router-view></router-view>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
 <script src="javascript/bundle.js"></script>
 <script>
-    var Test = {
-        template: '<div class="demo">This is test.</div>'
+    var test1 = Vue.component('test', {
+        template: `<p>{{title}}</p>`,
+        data() {
+            return {
+                title: 'TEST--__--TEST'
+            }
+        }
+    });
+    var User2 = {
+        template: `<p>your age is: {{$route.params.age}}</p>`
     };
     var User = {
-        template: `<h4>{{$route.params.name}}</h4>`
-    };
-    var Index = {
-        template: `<h1>This is {{$route.params.page}}</h1>`,
-        created() {
-            console.log('render component.')
+        template: `<div class="user-ctn">
+    <p class="user-id">your id is：{{userId}}</p>
+    <router-view></router-view>
+</div>`,
+        data() {
+            return {
+                userId: this.$route.params.user || this.$route.params.pathMatch
+            }
         },
-        beforeRouteUpdate(to, from, next) {
-            console.log('to-where', to);
-            console.log('from-where', from);
-            next();
+        created() {
+            console.log(this.$route);
+            console.log(this.$route.params)
         }
-        // watch: {
-        //     '$route': function (to, from) {
-        //         console.log('newRoute', to);
-        //         console.log('oldRoute', from);
-        //     }
-        // }
-    };
-    var User2 = {
-        template: `<div><h2>{{$route.params.pathMatch}}</h2><h3>{{$route.params.name}}</h3></div>`
-    };
-    var NotFound = {
-        template: `<div>NOT FOUND.</div>`
     };
     var routes = [
         {
-            path: '/test',
-            component: Test
-        },
-        {
-            path: '/user/:name',
-            component: User
-        },
-        {
-            name: 'homeRoute',
-            path: '/home/:page',
-            component: Index,
+            path: '/index',
+            component: test1,
             meta: {
-                showTab: false
+                title: 'test page'
             }
-        },
-        {
+        }, {
+            name: 'user',
+            path: '/user/:user',
+            component: User,
+            meta: '用户信息',
+            children: [
+                {
+                    path: ':age',
+                    component: User2
+                }
+            ]
+        },{
+            name: 'user',
             path: '/user-*',
-            component: User2
-        },
-        {
-            path: '*',
-            component: NotFound
+            component: User,
+            meta: '用户信息'
         }
     ];
-
     var router = new VueRouter({
         routes
     });
-    var app = new Vue({
+    var vm = new Vue({
         router,
         data() {
             return {
-                show: false
+                eventHub: new Vue(),
+                msg: 'message!'
             }
+        },
+        mounted() {
+            this.$nextTick(() => {
+                setTimeout(() => {
+                    this.$router.push('/user/1222')
+                },2000);
+            });
         }
     }).$mount("#app");
 </script>
